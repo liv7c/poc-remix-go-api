@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+}
+
+@layer components {
+  .app-wrapper {
+    @apply mx-auto max-w-5xl py-3 px-4 h-full;
+  }
+}

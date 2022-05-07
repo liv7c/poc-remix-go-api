@@ -1,0 +1,48 @@
+{
+  "name": "remix-template-fly",
+  "private": true,
+  "description": "",
+  "license": "",
+  "sideEffects": false,
+  "scripts": {
+    "build": "run-s build:*",
+    "build:css": "npm run generate:css -- --minify",
+    "build:remix": "remix build",
+    "dev": "run-p dev:*",
+    "dev:remix": "remix dev",
+    "dev:css": "cross-env NODE_ENV=development npm run generate:css -- --watch",
+    "generate:css": "tailwindcss -i ./styles/tailwind.css -o ./app/styles/tailwind.css",
+    "start": "remix-serve build",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@remix-run/node": "^1.4.3",
+    "@remix-run/react": "^1.4.3",
+    "@remix-run/serve": "^1.4.3",
+    "cross-env": "^7.0.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.4.3",
+    "@remix-run/eslint-config": "^1.4.3",
+    "@testing-library/dom": "^8.12.0",
+    "@testing-library/jest-dom": "^5.16.3",
+    "@testing-library/react": "^12.1.4",
+    "@testing-library/user-event": "^14.0.4",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "@vitejs/plugin-react": "^1.3.0",
+    "eslint": "^8.11.0",
+    "happy-dom": "^2.55.0",
+    "npm-run-all": "^4.1.5",
+    "tailwindcss": "^3.0.23",
+    "typescript": "^4.5.5",
+    "vite": "^2.9.1",
+    "vite-tsconfig-paths": "^3.4.1",
+    "vitest": "^0.8.2"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
