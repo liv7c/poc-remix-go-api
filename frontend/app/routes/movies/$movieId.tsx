@@ -5,10 +5,10 @@ import type { LoaderFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import { movies } from '~/mock/mockMovies';
-import type { Movie } from '~/types/movie';
+import type { Movie as MovieType } from '~/types/movie';
 
 interface LoaderData {
-  movie: Movie;
+  movie: MovieType;
 }
 
 export const loader: LoaderFunction = ({ params }) => {
@@ -28,6 +28,14 @@ export const loader: LoaderFunction = ({ params }) => {
 
   return json<LoaderData>({ movie });
 };
+
+export function CatchBoundary() {
+  return (
+    <div>
+      <h3>We couldn't find that movie!</h3>
+    </div>
+  );
+}
 
 export default function Movie() {
   const { movie } = useLoaderData() as LoaderData;
