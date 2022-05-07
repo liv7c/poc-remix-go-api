@@ -9,6 +9,6 @@ body {
 
 @layer components {
   .app-wrapper {
-    @apply mx-auto max-w-5xl py-3 px-4 h-full;
+    @apply mx-auto max-w-5xl py-10 px-4 h-full;
   }
 }
