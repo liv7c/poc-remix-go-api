@@ -1,11 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"time"
 )
 
 // version is the application api version
@@ -23,6 +24,12 @@ type AppStatus struct {
 	Version     string `json:"version"`
 }
 
+type application struct {
+	config   config
+	infoLog  *log.Logger
+	errorLog *log.Logger
+}
+
 func main() {
 	var cfg config
 
@@ -30,28 +37,27 @@ func main() {
 	flag.StringVar(&cfg.env, "environment", "development", "Applicatio environment (development|production)")
 	flag.Parse()
 
-	mux := http.NewServeMux()
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	mux.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-		status := AppStatus{
-			Status:      "Available",
-			Environment: cfg.env,
-			Version:     version,
-		}
+	app := application{
+		config:   cfg,
+		infoLog:  infoLog,
+		errorLog: errorLog,
+	}
 
-		js, err := json.Marshal(status)
-		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%d", cfg.port),
+		Handler:      app.routes(),
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 30 * time.Second,
+	}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(js)
-	})
+	infoLog.Printf("Starting server on port %d", cfg.port)
 
-	err := http.ListenAndServe(fmt.Sprintf(":%d", cfg.port), mux)
+	err := srv.ListenAndServe()
 	if err != nil {
-		log.Fatal(err)
+		errorLog.Fatal(err)
 	}
 }
