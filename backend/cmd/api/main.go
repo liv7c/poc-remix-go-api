@@ -17,13 +17,6 @@ type config struct {
 	env  string
 }
 
-// AppStatus contains information about the application (e.g. the current environment or version)
-type AppStatus struct {
-	Environment string `json:"environment"`
-	Status      string `json:"status"`
-	Version     string `json:"version"`
-}
-
 type application struct {
 	config   config
 	infoLog  *log.Logger

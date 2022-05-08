@@ -5,6 +5,13 @@ import (
 	"net/http"
 )
 
+// AppStatus contains information about the application (e.g. the current environment or version)
+type AppStatus struct {
+	Environment string `json:"environment"`
+	Status      string `json:"status"`
+	Version     string `json:"version"`
+}
+
 func (app *application) statusHandler(w http.ResponseWriter, r *http.Request) {
 	currentStatus := AppStatus{
 		Status:      "Available",
