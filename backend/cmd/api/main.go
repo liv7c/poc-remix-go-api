@@ -11,6 +11,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/liv7c/go-backend/models"
 )
 
 // version is the application api version
@@ -28,6 +29,7 @@ type application struct {
 	config   config
 	infoLog  *log.Logger
 	errorLog *log.Logger
+	models   models.Models
 }
 
 func main() {
@@ -52,6 +54,7 @@ func main() {
 		config:   cfg,
 		infoLog:  infoLog,
 		errorLog: errorLog,
+		models:   models.NewModels(db),
 	}
 
 	srv := &http.Server{
@@ -60,6 +63,10 @@ func main() {
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
+	}
+
+	if cfg.env == "development" {
+		srv.Addr = fmt.Sprintf("localhost:%d", cfg.port)
 	}
 
 	infoLog.Printf("Starting server on port %d", cfg.port)
