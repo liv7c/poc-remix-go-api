@@ -2,16 +2,15 @@ import { json } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import type { LoaderFunction } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useCatch, useLoaderData } from '@remix-run/react';
 
-import { movies } from '~/mock/mockMovies';
 import type { Movie as MovieType } from '~/types/movie';
 
 interface LoaderData {
   movie: MovieType;
 }
 
-export const loader: LoaderFunction = ({ params }) => {
+export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.movieId, 'Expected params.movieId');
 
   const castedMovieId = Number.parseInt(params.movieId);
@@ -20,25 +19,29 @@ export const loader: LoaderFunction = ({ params }) => {
     return json({});
   }
 
-  const movie = movies.find((movie) => movie.id === castedMovieId);
+  const res = await fetch(`http://localhost:4000/v1/movie/${castedMovieId}`);
 
-  if (!movie) {
-    throw new Response('Not Found', { status: 404 });
+  if (!res.ok) {
+    throw new Response('Movie not found', { status: 404 });
   }
 
-  return json<LoaderData>({ movie });
+  const movie = await res.json();
+  return json<LoaderData>(movie);
 };
 
 export function CatchBoundary() {
+  const caught = useCatch();
+
   return (
     <div>
-      <h3>We couldn't find that movie!</h3>
+      <h3>{caught.data}</h3>
     </div>
   );
 }
 
 export default function Movie() {
   const { movie } = useLoaderData() as LoaderData;
+  console.log(movie);
 
   return (
     <>

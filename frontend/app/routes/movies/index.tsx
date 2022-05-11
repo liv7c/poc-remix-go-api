@@ -2,16 +2,32 @@ import type { LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 
-import { movies } from '~/mock/mockMovies';
 import type { Movie } from '~/types/movie';
 
 interface LoaderData {
   movies: Movie[];
 }
 
-export const loader: LoaderFunction = () => {
-  return json<LoaderData>({ movies });
+const apiUrl = 'http://localhost:4000/v1/movies';
+
+export const loader: LoaderFunction = async () => {
+  const res = await fetch(apiUrl);
+
+  if (!res.ok) {
+    throw new Response('Error retrieving the movies');
+  }
+
+  const data = await res.json();
+  return json<LoaderData>(data);
 };
+
+export function CatchBoundary() {
+  return (
+    <div>
+      <h3>Sorry, we couldn't retrieve the movies!</h3>
+    </div>
+  );
+}
 
 export default function Movies() {
   const { movies } = useLoaderData() as LoaderData;
