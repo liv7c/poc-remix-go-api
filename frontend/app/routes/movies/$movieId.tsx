@@ -41,7 +41,6 @@ export function CatchBoundary() {
 
 export default function Movie() {
   const { movie } = useLoaderData() as LoaderData;
-  console.log(movie);
 
   return (
     <>
@@ -49,8 +48,24 @@ export default function Movie() {
         &larr; Back to all movies
       </Link>
       <div className="mt-4">
-        <h3>Movie: {movie.title}</h3>
-        <p>Duration: {movie.runtime} minutes</p>
+        <h2 className="text-xl font-bold">Movie: {movie.title}</h2>
+
+        <div className="mt-4 border border-gray-100">
+          <dl>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Description</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {movie.description}
+              </dd>
+            </div>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Run time</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {movie.runtime}
+              </dd>
+            </div>
+          </dl>
+        </div>
       </div>
     </>
   );
